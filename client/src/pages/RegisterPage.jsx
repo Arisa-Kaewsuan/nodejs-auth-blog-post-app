@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "../contexts/authentication"; // Import the useAuth hook
 
 function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -6,10 +7,18 @@ function RegisterPage() {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (event) => {
+  const { register } = useAuth(); // Destructure the register function from the AuthContext
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // 🐨 Todo: Exercise #2
-    // นำ Function `register` ใน AuthContext มา Execute ใน Event Handler ตรงนี้
+    const data = { username, firstName, lastName, password };
+    try {
+      // Call the register function with the data object
+      await register(data);
+      alert("Registration successful!");
+    } catch (error) {
+      alert("Registration failed. Please try again.");
+    }
   };
 
   return (

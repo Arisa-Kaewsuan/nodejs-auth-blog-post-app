@@ -4,11 +4,18 @@ import cors from "cors";
 import postRouter from "./apps/posts.js";
 import { client } from "./utils/db.js";
 
+import dotenv from "dotenv";
+import authRouter from './apps/auth.js'
+
 async function init() {
   const app = express();
   const port = 4000;
 
+  dotenv.config(); // Load environment variables from a .env file
   await client.connect();
+
+  /// Auth Router
+  app.use("/auth", authRouter);
 
   app.use(cors());
   app.use(bodyParser.json());
