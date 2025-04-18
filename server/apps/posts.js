@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { Router } from "express";
-import { db } from "../utils/db.js";
+import { connectDb } from "../utils/db.js";
 
 const postRouter = Router();
 
@@ -23,7 +23,7 @@ postRouter.get("/", async (req, res) => {
     query.title = new RegExp(`${keywords}`, "i");
   }
 
-  const collection = db.collection("posts");
+  const collection = connectDb.collection("posts");
   const posts = await collection
     .find(query)
     .sort({ published_at: -1 })
@@ -42,7 +42,7 @@ postRouter.get("/", async (req, res) => {
 
 postRouter.get("/:id", async (req, res) => {
   const postId = ObjectId(req.params.id);
-  const collection = db.collection("posts");
+  const collection = connectDb.collection("posts");
   const post = await collection.find({ _id: postId }).toArray();
   return res.json({
     data: post[0],
@@ -58,7 +58,7 @@ postRouter.post("/", async (req, res) => {
     published_at: hasPublished ? new Date() : null,
   };
 
-  const collection = db.collection("posts");
+  const collection = connectDb.collection("posts");
   await collection.insertOne(newPost);
 
   return res.json({
@@ -75,7 +75,7 @@ postRouter.put("/:id", async (req, res) => {
     published_at: hasPublished ? new Date() : null,
   };
   const postId = ObjectId(req.params.id);
-  const collection = db.collection("posts");
+  const collection = connectDb.collection("posts");
   await collection.updateOne(
     { _id: postId },
     {
@@ -89,7 +89,7 @@ postRouter.put("/:id", async (req, res) => {
 
 postRouter.delete("/:id", async (req, res) => {
   const postId = ObjectId(req.params.id);
-  const collection = db.collection("posts");
+  const collection = connectDb.collection("posts");
   await collection.deleteOne({ _id: postId });
   return res.json({
     message: `Post ${postId} has been deleted.`,
