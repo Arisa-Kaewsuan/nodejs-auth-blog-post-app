@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { Router } from "express";
 import { connectDb } from "../utils/db.js";
+import { protect } from "../middlewares/protect.js";
 
 const postRouter = Router();
 
@@ -49,7 +50,7 @@ postRouter.get("/:id", async (req, res) => {
   });
 });
 
-postRouter.post("/", async (req, res) => {
+postRouter.post("/", protect,  async (req, res) => {
   const hasPublished = req.body.status === "published";
   const newPost = {
     ...req.body,
@@ -66,7 +67,7 @@ postRouter.post("/", async (req, res) => {
   });
 });
 
-postRouter.put("/:id", async (req, res) => {
+postRouter.put("/:id", protect, async (req, res) => {
   const hasPublished = req.body.status === "published";
 
   const updatedPost = {
@@ -87,7 +88,7 @@ postRouter.put("/:id", async (req, res) => {
   });
 });
 
-postRouter.delete("/:id", async (req, res) => {
+postRouter.delete("/:id", protect, async (req, res) => {
   const postId = ObjectId(req.params.id);
   const collection = connectDb.collection("posts");
   await collection.deleteOne({ _id: postId });
