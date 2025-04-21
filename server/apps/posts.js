@@ -8,6 +8,8 @@ const postRouter = Router();
 // 🐨 Todo: Exercise #5
 // นำ Middleware `protect` มาใช้กับ `postRouter` ด้วย Function `app.use`
 
+postRouter.use(protect)
+
 postRouter.get("/", async (req, res) => {
   const status = req.query.status;
   const keywords = req.query.keywords;
@@ -24,7 +26,8 @@ postRouter.get("/", async (req, res) => {
     query.title = new RegExp(`${keywords}`, "i");
   }
 
-  const collection = connectDb.collection("posts");
+  const db = await connectDb(); 
+  const collection = db.collection("posts");
   const posts = await collection
     .find(query)
     .sort({ published_at: -1 })
@@ -43,14 +46,15 @@ postRouter.get("/", async (req, res) => {
 
 postRouter.get("/:id", async (req, res) => {
   const postId = ObjectId(req.params.id);
-  const collection = connectDb.collection("posts");
+  const db = await connectDb(); 
+  const collection = db.collection("posts");
   const post = await collection.find({ _id: postId }).toArray();
   return res.json({
     data: post[0],
   });
 });
 
-postRouter.post("/", protect,  async (req, res) => {
+postRouter.post("/",  async (req, res) => {
   const hasPublished = req.body.status === "published";
   const newPost = {
     ...req.body,
@@ -59,7 +63,8 @@ postRouter.post("/", protect,  async (req, res) => {
     published_at: hasPublished ? new Date() : null,
   };
 
-  const collection = connectDb.collection("posts");
+  const db = await connectDb(); 
+  const collection = db.collection("posts");
   await collection.insertOne(newPost);
 
   return res.json({
@@ -67,7 +72,7 @@ postRouter.post("/", protect,  async (req, res) => {
   });
 });
 
-postRouter.put("/:id", protect, async (req, res) => {
+postRouter.put("/:id", async (req, res) => {
   const hasPublished = req.body.status === "published";
 
   const updatedPost = {
@@ -76,7 +81,8 @@ postRouter.put("/:id", protect, async (req, res) => {
     published_at: hasPublished ? new Date() : null,
   };
   const postId = ObjectId(req.params.id);
-  const collection = connectDb.collection("posts");
+  const db = await connectDb(); 
+  const collection = db.collection("posts");
   await collection.updateOne(
     { _id: postId },
     {
@@ -88,9 +94,10 @@ postRouter.put("/:id", protect, async (req, res) => {
   });
 });
 
-postRouter.delete("/:id", protect, async (req, res) => {
+postRouter.delete("/:id", async (req, res) => {
   const postId = ObjectId(req.params.id);
-  const collection = connectDb.collection("posts");
+  const db = await connectDb(); 
+  const collection = db.collection("posts");
   await collection.deleteOne({ _id: postId });
   return res.json({
     message: `Post ${postId} has been deleted.`,

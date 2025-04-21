@@ -3,13 +3,11 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import postRouter from "./apps/posts.js";
 import authRouter from "./apps/auth.js";
-import { client } from "./utils/db.js";
+import { connectDb } from "./utils/db.js";
 
 async function init() {
   const app = express();
   const port = 4000;
-
-  await client.connect();
 
   app.use(cors());
   app.use(bodyParser.json());
@@ -24,8 +22,14 @@ async function init() {
     res.status(404).send("Not found");
   });
 
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+  app.listen(port, async() => {
+    try{
+      await connectDb();
+      console.log(`Example app listening on port ${port}`);
+    }
+    catch(err) {
+      console.error(err)
+    }
   });
 }
 
