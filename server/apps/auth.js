@@ -63,12 +63,12 @@ authRouter.post("/login", async (req, res) => {
   
       const user = await usersCollection.findOne({ username });
       if (!user) {
-        return res.status(401).json({ message: "Invalid username" });
+        return res.status(401).json({ message: "Invalid username or password" });
       }
   
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) {
-        return res.status(401).json({ message: "Invalid password" });
+        return res.status(401).json({ message: "Invalid username or password" });
       }
   
       const token = jwt.sign(

@@ -46,8 +46,10 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const isAuthenticated = Boolean(localStorage.getItem("token"));
+
   return (
-    <AuthContext.Provider value={{ user, register, login, logout }}>
+    <AuthContext.Provider value={{ user, register, login, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
