@@ -1,11 +1,15 @@
 import { ObjectId } from "mongodb";
 import { Router } from "express";
 import { db } from "../utils/db.js";
+import protect from "../middlewares/protect.js"; // ✅ นำเข้า middleware protect
 
 const postRouter = Router();
 
 // 🐨 Todo: Exercise #5
 // นำ Middleware `protect` มาใช้กับ `postRouter` ด้วย Function `app.use`
+
+// ✅ Apply middleware protect ให้กับทุก route ใน postRouter
+postRouter.use(protect);
 
 postRouter.get("/", async (req, res) => {
   const status = req.query.status;

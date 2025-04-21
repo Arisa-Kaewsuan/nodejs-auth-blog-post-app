@@ -34,7 +34,7 @@ authRouter.post("/register", async (req, res) => {
 authRouter.post("/login", async (req, res) => {
     const collection = db.collection("users");
     const user = await collection.findOne({ username: req.body.username });
-    
+    console.log(req.body.username, user);
     if (!user) {
         return res.status(404).json({
             "message": "user not found",
@@ -53,7 +53,8 @@ authRouter.post("/login", async (req, res) => {
         { 
             id: user._id, 
             firstName: user.firstName, 
-            lastName: user.lastName 
+            lastName: user.lastName, 
+            email: "maplezahaha@gmail.com"
         }, 
         process.env.JWT_SECRET, 
         { expiresIn: "15m" });
