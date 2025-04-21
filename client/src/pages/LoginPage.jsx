@@ -1,13 +1,24 @@
 import { useState } from "react";
+import { useAuth } from "../contexts/authentication";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useAuth();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // 🐨 Todo: Exercise #4
     //  นำ Function `login` ใน AuthContext มา Execute ใน Event Handler ตรงนี้
+    await login(username, password)
+      .then(() => {
+        // Handle successful login, e.g., redirect to a dashboard
+        console.log("Login successful!");
+      })
+      .catch((error) => {
+        // Handle login error, e.g., show an error message
+        console.error("Login failed:", error);
+      });
   };
 
   return (
