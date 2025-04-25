@@ -19,6 +19,7 @@ async function init() {
 
   app.use(cors());
   app.use(bodyParser.json());
+  
   app.use("/posts", postRouter);
 
   app.get("/", (req, res) => {
